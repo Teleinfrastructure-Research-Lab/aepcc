@@ -1,0 +1,36 @@
+foldingnet128:
+    path: 
+    epoch: 
+    root_ckpt: true
+foldingnet256:
+    path: 
+    epoch: 
+    root_ckpt: true
+foldingnet512:
+    path: 
+    epoch: 
+    root_ckpt: true
+gae128:
+    path: 
+    epoch: 
+    root_ckpt: true
+gae256:
+    path: 
+    epoch: 
+    root_ckpt: true
+gae512:
+    path: 
+    epoch: 
+    root_ckpt: true
+tgae128:
+    path: 
+    epoch: 
+    root_ckpt: true
+tgae256:
+    path: 
+    epoch: 
+    root_ckpt: true
+tgae512:
+    path: 
+    epoch: 
+    root_ckpt: true

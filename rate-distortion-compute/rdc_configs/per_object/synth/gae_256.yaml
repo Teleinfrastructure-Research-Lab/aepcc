@@ -1,0 +1,14 @@
+architecture:
+  name: gae
+  module_params:
+    num_features: 256
+    hyper_sphere: true
+    film_flag: false
+    quantize: !root_include "../quantize.yaml"
+  load_ckpt: !link checkpoints->gae256
+
+dataloader-test:
+  name: default-dl
+  dl_params:
+    split: "test"
+    batch_size: 1

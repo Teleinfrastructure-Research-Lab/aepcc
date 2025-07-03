@@ -1,0 +1,15 @@
+logs-dir: logs
+log_level: INFO
+paths:
+  ARCHITECTURES_PATH: architecture
+  LOSSES_PATH: loss
+  DATA_LOADERS_PATH: dataloaders
+  TEST_INPUTS_DIR: inputs
+  TEST_OUTPUTS_DIR: outputs
+
+
+data: !include data.yaml
+default-params: !include default-params.yaml
+checkpoints: !include checkpoints.yaml
+scenes: !include scenes.yaml
+

@@ -1,0 +1,15 @@
+architecture:
+  name: tgae
+  module_params:
+    num_features: 128
+    hyper_sphere: true
+    film_flag: false
+    num_layers_enc: 1
+    num_layers_dec: 2
+    quantize: !root_include "../quantize.yaml"
+  load_ckpt: !link checkpoints->tgae128
+
+use_synonyms: false
+mask_output: false
+
+scenes: !link scenes

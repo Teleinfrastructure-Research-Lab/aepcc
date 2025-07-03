@@ -1,0 +1,27 @@
+out-of-project-paths: !root_include out_of_project_paths.yaml
+data-pipeline: !root_include data_pipeline.yaml
+quantization_stats: data/quant8_scales
+NUM_POINTS: 2048
+NUM_POINTS_NN: 2048
+CONTRASTIVE_AUGMENTATION_MAX_ANGLE_COEF: 0.25
+CLASS_NUM: 18
+CLASS_ENUM:
+  chair: 1
+  table: 2
+  sofa: 3
+  lamp: 4
+  cabinet: 5
+  pillow: 6
+  monitor: 7
+  bed: 8
+  bookshelf: 9
+  electronics: 10
+  containers: 11
+  bench: 12
+  wallattached: 13
+  clock: 14
+  curtain: 15
+  sink: 16
+  counter: 17
+  kitchen: 18
+K: 3

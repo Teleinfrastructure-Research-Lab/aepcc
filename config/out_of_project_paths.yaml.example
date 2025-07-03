@@ -1,0 +1,6 @@
+SHAPENET_CORE_PATH: /home/user/Datasets/ShapeNetCore
+SHAPENET_SEM_PATH: /home/user/Datasets/ShapeNetSem/ShapeNetSem-backup
+MATTERPORT_PATH: /home/user/Datasets/Matterport3D/v1/scans
+SCENENN_PATH: /home/user/Datasets/SceneNN_raw/scenenn_seg_76_raw/scenenn_dec24_data
+H5_PATH_FULL: /home/user/Datasets/dataset_full.h5
+H5_PATH_SYNTH: /home/user/Datasets/dataset_synth.h5

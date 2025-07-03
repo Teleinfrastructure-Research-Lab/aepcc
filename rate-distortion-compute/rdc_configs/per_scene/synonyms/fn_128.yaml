@@ -1,0 +1,12 @@
+architecture:
+  name: folding-net
+  module_params:
+    pe_type: sphere
+    num_features: 128
+    quantize: !root_include "../quantize.yaml"
+  load_ckpt: !link checkpoints->foldingnet128
+
+use_synonyms: true
+mask_output: false
+
+scenes: !link scenes

@@ -1,0 +1,3 @@
+[submodule "submodules/smol"]
+	path = submodules/smol
+	url = https://github.com/Teleinfrastructure-Research-Lab/smol.git

@@ -1,0 +1,36 @@
+task:
+  task_type: train
+  worker: brct
+num_epochs: 300
+optimizer: adam
+learning_rate: !!float 1e-4
+weight_decay: !!float 1e-6
+use_scheduler: true
+scheduler_step: 60
+scheduler_gamma: 0.5
+
+running_metrics: [cd]
+output_path: runs/gae
+
+architecture:
+  name: gae
+  module_params:
+    num_features: 256
+    hyper_sphere: true
+    film_flag: false
+  load_ckpt:
+
+loss:
+  name: cd-loss-gae
+  module_params:
+
+dataloader_train:
+  name: default-dl
+  dl_params:
+    batch_size_conf: !root_include batch_config/batch_size_conf.yaml
+
+dataloader_val:
+  name: default-dl
+  dl_params:
+    split: "val"
+    batch_size_conf: !root_include batch_config/batch_size_conf.yaml

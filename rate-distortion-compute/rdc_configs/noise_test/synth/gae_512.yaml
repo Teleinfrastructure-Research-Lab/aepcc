@@ -1,0 +1,18 @@
+architecture:
+  name: gae
+  module_params:
+    num_features: 512
+    hyper_sphere: true
+    film_flag: false
+    awgn: !root_include "../noise.yaml"
+  load_ckpt: !link checkpoints->gae512
+
+loss:
+  name: cd-loss-gae
+  module_params:
+
+dataloader-test:
+  name: default-dl
+  dl_params:
+    split: "test"
+    batch_size: 1

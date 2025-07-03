@@ -1,0 +1,2 @@
+quantize: True
+quantization_depth: 2

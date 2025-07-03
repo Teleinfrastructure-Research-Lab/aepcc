@@ -1,0 +1,4 @@
+quantize: false
+quantization_depth: 2
+awgn: false
+awgn_snr: 100

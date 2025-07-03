@@ -1,0 +1,22 @@
+architecture:
+  name: tgae
+  module_params:
+    num_features: 512
+    hyper_sphere: true
+    film_flag: false
+    num_layers_enc: 1
+    num_layers_dec: 2
+    quantize: !root_include "../quantize.yaml"
+  load_ckpt: !link checkpoints->tgae512
+
+dataloader-test:
+  name: default-dl
+  dl_params:
+    split: "test"
+    h5_path: !link data->H5_PATH_FULL
+
+dataloader-train:
+  name: default-dl
+  dl_params:
+    split: "train"
+    h5_path: !link data->H5_PATH_FULL

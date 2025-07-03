@@ -1,0 +1,17 @@
+architecture:
+  name: folding-net
+  module_params:
+    pe_type: sphere
+    num_features: 256
+    quantize: !root_include "../quantize.yaml"
+  load_ckpt: !link checkpoints->foldingnet256
+
+dataloader-test:
+  name: default-dl
+  dl_params:
+    split: "test"
+
+dataloader-train:
+  name: default-dl
+  dl_params:
+    split: "train" 

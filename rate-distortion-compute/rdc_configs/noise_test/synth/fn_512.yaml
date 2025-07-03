@@ -1,0 +1,17 @@
+architecture:
+  name: folding-net
+  module_params:
+    pe_type: sphere
+    num_features: 512
+    awgn: !root_include "../noise.yaml"
+  load_ckpt: !link checkpoints->foldingnet512
+
+loss:
+  name: cd-loss
+  module_params:
+
+dataloader-test:
+  name: default-dl
+  dl_params:
+    split: "test"
+    batch_size: 1

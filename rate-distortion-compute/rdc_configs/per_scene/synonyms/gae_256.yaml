@@ -1,0 +1,13 @@
+architecture:
+  name: gae
+  module_params:
+    num_features: 256
+    hyper_sphere: true
+    film_flag: false
+    quantize: !root_include "../quantize.yaml"
+  load_ckpt: !link checkpoints->gae256
+
+use_synonyms: true
+mask_output: true
+
+scenes: !link scenes

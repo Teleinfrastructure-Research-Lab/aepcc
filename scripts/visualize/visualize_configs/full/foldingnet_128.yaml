@@ -1,0 +1,19 @@
+architecture:
+  name: folding-net
+  module_params:
+    num_features: 128
+    pe_type: sphere
+    quantize: !root_include "../quantize.yaml"
+  load_ckpt: !link checkpoints->foldingnet128
+
+dataloader-test:
+  name: default-dl
+  dl_params:
+    split: "test"
+    h5_path: !link data->H5_PATH_FULL
+
+dataloader-train:
+  name: default-dl
+  dl_params:
+    split: "train"
+    h5_path: !link data->H5_PATH_FULL

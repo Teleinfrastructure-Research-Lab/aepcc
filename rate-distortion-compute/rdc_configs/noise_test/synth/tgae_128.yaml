@@ -1,0 +1,20 @@
+architecture:
+  name: tgae
+  module_params:
+    num_features: 128
+    hyper_sphere: true
+    film_flag: false
+    num_layers_enc: 1
+    num_layers_dec: 2
+    awgn: !root_include "../noise.yaml"
+  load_ckpt: !link checkpoints->tgae128
+
+loss:
+  name: cd-loss-tgae
+  module_params:
+
+dataloader-test:
+  name: default-dl
+  dl_params:
+    split: "test"
+    batch_size: 1
