@@ -1,7 +1,7 @@
 # Install
 
 ```bash
-git clone --recurse-submodules git@github.com:IvayloBozhilov/ae-pcc.git
+git clone --recurse-submodules https://github.com/Teleinfrastructure-Research-Lab/aepcc.git
 python install_dependencies.py
 pip install -e .
 pip install submodules/smol
