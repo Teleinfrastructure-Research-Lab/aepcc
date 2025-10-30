@@ -22,6 +22,8 @@ import numpy as np
 import torch
 import trimesh
 import pathlib
+import time
+
 
 from smol.core import smol
 from utils.codec_sa import get_encoder, get_decoder
@@ -36,6 +38,14 @@ from utils.utils import d1_psnr_pcc
 from utils.visualize import visualize_point_cloud_o3d
 
 REMOVE_IDX_FROM_IMR = True
+
+# ================================================================
+# -------- time helper -------------------------------------
+# ================================================================
+def _now():
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
+    return time.perf_counter()
 
 # ================================================================
 # -------- scene I/O helpers -------------------------------------
@@ -202,13 +212,15 @@ def main(architecture, vector_size, quantization,
 
     # ================================================= encode ======
     if mode in ('encode','both'):
+        t_enc0 = _now()
+
         objects = load_vertex_groups(input_file, num_points)
         smol.logger.info(f"Found {len(objects)} objects.")
 
         for P_np, mask in objects:
             pts_norm, centroid, max_d = sphere_normalization_masked_with_params(torch.from_numpy(P_np), mask.squeeze(0))
             pts = pts_norm.T.unsqueeze(0)
-            
+
             imr_q = _encode_object(
                 pts, mask, encoder, architecture,
                 quantization, qstats, device)
@@ -224,8 +236,20 @@ def main(architecture, vector_size, quantization,
         if mode == 'encode':
             Path(output_file).write_bytes(bitstream)
 
+        t_enc1 = _now()
+        enc_time_s = t_enc1 - t_enc0
+        smol.logger.info(f"Encode time : {enc_time_s:.3f} s")
+        try:
+            n_pts_in = int(mask_scene.sum().item()) if mask_scene is not None else 0
+            if n_pts_in > 0:
+                smol.logger.info(f"Encode throughput : {n_pts_in/enc_time_s:,.0f} pts/s")
+        except Exception:
+            pass
+
     # ================================================= decode ======
     if mode in ('decode','both'):
+        t_dec0 = _now()
+
         if mode == 'decode':
             bitstream = Path(input_file).read_bytes()
 
@@ -236,7 +260,7 @@ def main(architecture, vector_size, quantization,
         for obj in objs_meta:
             imr_q, centroid, max_d = _unpack_imr(obj)
             imr = _dequantise(imr_q, architecture, quantization,
-                              qstats, (1, vector_size))
+                            qstats, (1, vector_size))
 
             with torch.no_grad():
                 if architecture in ('foldingnet','tgae'):
@@ -254,10 +278,21 @@ def main(architecture, vector_size, quantization,
             recon_objects.append(pts_world)
 
             pc_out_scene = torch.from_numpy(pts_world.T).unsqueeze(0) if pc_out_scene is None else \
-                           torch.cat((pc_out_scene,
-                                      torch.from_numpy(pts_world.T).unsqueeze(0)), dim=2)
+                        torch.cat((pc_out_scene,
+                                    torch.from_numpy(pts_world.T).unsqueeze(0)), dim=2)
 
         save_pointcloud_scene(recon_objects, output_file)
+
+        t_dec1 = _now()
+        dec_time_s = t_dec1 - t_dec0
+        smol.logger.info(f"Decode time : {dec_time_s:.3f} s")
+        try:
+            n_pts_out = int(pc_out_scene.shape[-1]) if pc_out_scene is not None else 0
+            if n_pts_out > 0:
+                smol.logger.info(f"Decode throughput : {n_pts_out/dec_time_s:,.0f} pts/s")
+        except Exception:
+            pass
+
 
     # ================================================= RD metrics ==
     if mode == 'both':
@@ -271,6 +306,10 @@ def main(architecture, vector_size, quantization,
 
         psnr = d1_psnr_pcc(pc_in_scene[:,:,mask_scene[0,:]==1.0], pc_out_scene, chunk=2048, device='cuda' if torch.cuda.is_available() else 'cpu')
         smol.logger.info(f"Scene PSNR : {psnr:.2f} dB")
+
+        sparsification = 100.0 * (1.0 - (n_pts_out / n_pts_in))
+        sparsification = max(0.0, min(100.0, sparsification))
+        smol.logger.info(f"Sparsification : {sparsification:.2f} %")
 
         # visualize_point_cloud_o3d(pc_in_scene.squeeze(0).cpu())
         # visualize_point_cloud_o3d(pc_out_scene.squeeze(0).cpu())
