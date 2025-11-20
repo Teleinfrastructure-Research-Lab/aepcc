@@ -3,6 +3,8 @@ import click
 import torch
 import pandas as pd
 from tqdm import tqdm
+import time
+
 
 from smol.core import smol
 from smol.register.Architecture import CommonArchitecture
@@ -58,8 +60,18 @@ def rdc_per_object(input_path):
                 with torch.no_grad():
                     batch.to(device)
                     category = onehot_to_str(batch["cls_onehots"])[0]
-                    out = arch(batch)
+                    # ----- measure inference time -----
+                    if torch.cuda.is_available():
+                        torch.cuda.synchronize()
+                    t0 = time.perf_counter()
 
+                    out = arch(batch)  # <---- timed
+
+                    if torch.cuda.is_available():
+                        torch.cuda.synchronize()
+                    t1 = time.perf_counter()
+                    infer_time_s = t1 - t0
+                    # --------------------------------------------------
                     x = batch["point_clouds"].squeeze(0)
                     mask = batch["masks"].squeeze(0)
                     ref = x[:, mask==1.0]
@@ -82,7 +94,8 @@ def rdc_per_object(input_path):
                             "rate": bpp.item(),
                             "distortion": psnr_value,
                             "arch_name": arch_name,
-                            "category": category
+                            "category": category,
+                            "inference_time_s": infer_time_s,
                         }])
                     ], ignore_index=True)
         except Exception as e:
