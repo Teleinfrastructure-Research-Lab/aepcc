@@ -1,4 +1,5 @@
 import os
+import time
 import json
 import torch
 import click
@@ -162,7 +163,9 @@ def process_config_file(config_file, merged_df, synonyms, results_df, out_basena
         try:
             smol.logger.info(f"Processing scene {scene['name']}:region{scene['region']} from {scene['dataset']}")
             scene_objects = load_scene_objects(scene, merged_df)
+            t0 = time.perf_counter()
             pc_in, pc_out, mask, imrs, count, num_input_points, num_output_points = evaluate_scene(scene_objects, arch, num_points, use_synonyms, synonyms, device)
+            eval_time_s = time.perf_counter() - t0
             if count == 0:
                 smol.logger.warning(f"No valid objects found for scene {scene['name']} – skipping.")
                 continue
@@ -181,7 +184,8 @@ def process_config_file(config_file, merged_df, synonyms, results_df, out_basena
                 "distortion": psnr,
                 "arch_name": arch_name,
                 "scene": scene_id,
-                "use_synonyms": str(use_synonyms)
+                "use_synonyms": str(use_synonyms),
+                "evaluate_time_s": eval_time_s,
             }])], ignore_index=True)
 
             # save_point_clouds(pc_in, pc_out, mask, f"{scene_id}_{use_synonyms}", mask_output)
@@ -216,7 +220,17 @@ def rdc_per_scene(input_path):
     synonyms = pd.read_csv(smol.get_config("data", "SYNONYMS_PATH"), sep=";")
 
     merged_df = pd.concat([mt_samples, snn_samples], ignore_index=True)
-    results_df = pd.DataFrame(columns=["rate", "num_objects", "num_input_points", "num_output_points", "distortion", "arch_name", "scene", "use_synonyms"])
+    results_df = pd.DataFrame(columns=[
+        "rate",
+        "num_objects",
+        "num_input_points",
+        "num_output_points",
+        "distortion",
+        "arch_name",
+        "scene",
+        "use_synonyms",
+        "evaluate_time_s",
+    ])
 
     for config_file in config_files:
         results_df = process_config_file(config_file, merged_df, synonyms, results_df, out_basename, device)
