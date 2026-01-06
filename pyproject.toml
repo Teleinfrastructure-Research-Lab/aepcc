@@ -5,9 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ae_pcc"
 version = "0.1.0"
-description = "Your project description here"
+description = "Autoencoder Architectures for Low-rate Sparse Point Cloud Geometry Coding"
 authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "Ivaylo Bojilov", email = "ibojilov@tu-sofia.bg"}
 ]
 dependencies = [
     "numpy==1.26.4",
