@@ -1,7 +1,7 @@
 # Requirements
 
 - Python: 3.10
-- CUDA: 12.1 for GPU-enabled PyTorch builds (CPU-only works but will be much slower)
+- CUDA: 12.1 for GPU-enabled PyTorch builds
 - Datasets (download and provide paths in `config/out_of_project_paths.yaml`):
   - ShapeNet-Core
   - ShapeNet-Semantic
@@ -77,7 +77,7 @@ To generate the **SYNTH** and **FULL** datasets use the scripts under `pipeline/
 
 The `rate-distortion-compute` directory contains scripts that do rate-distortion experiments for objects and scenes. These are the results reported in Fig. 9 in the manuscript.
 
-Both `rdc_per_object.py` and `rdc_per_scene.py` take as argument a path to a experiment configuration. These are available in `rate-distortion-compute/rdc_configs`. The scripts save the resutls (rate-distortion samples for different architectures and configuratons) as a csv in `outputs/rdc_outputs`.
+Both `rdc_per_object.py` and `rdc_per_scene.py` take as argument a path to experiment configuration directory. These are available in `rate-distortion-compute/rdc_configs`. The scripts save the resutls (rate-distortion samples for different architectures and configuratons) as a CSV in `outputs/rdc_outputs`.
 
 # Standalone Codec
 
@@ -114,6 +114,9 @@ Per-object handling:
 - Each group/object is extracted as a point cloud. If it has more than 2048 points, it is subsampled to 2048; if fewer, it is padded to 2048 and masked.
 - Objects are encoded independently, packed into a single scene bitstream, and decoded back to per-object point clouds.
 
+# Acknowledgements
+
+This research was funded by the European Union–Next Generation EU through the National Recovery and Resilience Plan of the Republic of Bulgaria, Project No. BG-RRP-2.004-0005, “Improving the research capacity and quality to achieve international recognition and resilience of TU-Sofia” (IDEAS). The work was carried out in academic collaboration with Princeton University, facilitated by the EU Horizon 2020 Marie Skłodowska–Curie Research and Innovation Staff Exchange Programme “Research Collaboration and Mobility for Beyond 5G Future Wireless Networks (RECOMBINE)” under Grant Agreement No. 872857. The authors also acknowledge the support of the Teleinfrastructure R&D Laboratory at the Technical University of Sofia and the Intelligent Communication Infrastructures R&D Laboratory at Sofia Tech Park, Sofia, Bulgaria.
 
 # Citation
 
